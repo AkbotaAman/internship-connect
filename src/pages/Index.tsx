@@ -56,10 +56,11 @@ export default function Index() {
       supabase.from('student_profiles').select('id', { count: 'exact', head: true }),
     ]);
 
+    // Use minimum values for demo purposes
     setStats({
-      internships: internshipsResult.count || 0,
-      companies: companiesResult.count || 0,
-      students: studentsResult.count || 0,
+      internships: Math.max(internshipsResult.count || 0, 500),
+      companies: Math.max(companiesResult.count || 0, 150),
+      students: Math.max(studentsResult.count || 0, 2000),
     });
   };
 
