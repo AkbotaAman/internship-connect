@@ -6,6 +6,21 @@ import { SearchFilters, type SearchFilters as Filters } from '@/components/inter
 import { supabase } from '@/integrations/supabase/client';
 import { Briefcase, Loader2 } from 'lucide-react';
 
+// Sanitize SQL pattern characters to prevent pattern injection attacks
+const escapeSqlPattern = (str: string): string => {
+  if (!str) return '';
+  // Escape SQL LIKE pattern metacharacters (% and _)
+  return str.replace(/[%_\\]/g, '\\$&');
+};
+
+// Validate and sanitize search input
+const sanitizeSearchInput = (input: string, maxLength: number = 100): string => {
+  if (!input) return '';
+  // Trim, limit length, and escape SQL patterns
+  const trimmed = input.trim().slice(0, maxLength);
+  return escapeSqlPattern(trimmed);
+};
+
 export default function Internships() {
   const [searchParams] = useSearchParams();
   const [internships, setInternships] = useState<any[]>([]);
@@ -68,11 +83,17 @@ export default function Internships() {
       .eq('is_active', true);
 
     if (searchFilters.keyword) {
-      query = query.or(`title.ilike.%${searchFilters.keyword}%,description.ilike.%${searchFilters.keyword}%`);
+      const sanitizedKeyword = sanitizeSearchInput(searchFilters.keyword);
+      if (sanitizedKeyword) {
+        query = query.or(`title.ilike.%${sanitizedKeyword}%,description.ilike.%${sanitizedKeyword}%`);
+      }
     }
 
     if (searchFilters.location) {
-      query = query.ilike('location', `%${searchFilters.location}%`);
+      const sanitizedLocation = sanitizeSearchInput(searchFilters.location);
+      if (sanitizedLocation) {
+        query = query.ilike('location', `%${sanitizedLocation}%`);
+      }
     }
 
     if (searchFilters.industry) {
