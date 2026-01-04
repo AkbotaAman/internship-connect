@@ -26,6 +26,7 @@ import CompanyApplicants from "./pages/company/CompanyApplicants";
 
 // Admin Pages
 import AdminDashboard from "./pages/admin/AdminDashboard";
+import { ScrollToTop } from "./components/ScrollToTop";
 
 const queryClient = new QueryClient();
 
@@ -62,6 +63,7 @@ const App = () => (
               <Route path="*" element={<NotFound />} />
             </Routes>
           </AuthProvider>
+          <ScrollToTop />
         </BrowserRouter>
       </TooltipProvider>
     </ThemeProvider>
