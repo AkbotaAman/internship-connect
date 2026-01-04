@@ -18,6 +18,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
 import { Loader2, ArrowLeft, Briefcase } from 'lucide-react';
+import { internshipSchema } from '@/lib/validations';
 
 const industries = [
   'Technology',
@@ -94,35 +95,43 @@ export default function NewInternship() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!formData.title.trim()) {
-      toast.error('Title is required');
+    // Prepare data for validation
+    const dataToValidate = {
+      ...formData,
+      location: formData.is_remote ? 'Remote' : formData.location,
+    };
+
+    // Validate with Zod schema
+    const result = internshipSchema.safeParse(dataToValidate);
+    if (!result.success) {
+      const firstError = result.error.errors[0];
+      toast.error(firstError.message);
       return;
     }
-    if (!formData.description.trim()) {
-      toast.error('Description is required');
-      return;
-    }
-    if (!formData.location.trim() && !formData.is_remote) {
+
+    // Additional check for non-remote positions
+    if (!formData.is_remote && !formData.location.trim()) {
       toast.error('Location is required for on-site positions');
       return;
     }
 
     setSubmitting(true);
 
+    const validated = result.data;
     const { error } = await supabase
       .from('internships')
       .insert({
         company_id: companyProfile.id,
-        title: formData.title,
-        description: formData.description,
-        requirements: formData.requirements || null,
-        duration: formData.duration || null,
-        is_paid: formData.is_paid,
-        salary_info: formData.salary_info || null,
-        location: formData.is_remote ? 'Remote' : formData.location,
-        is_remote: formData.is_remote,
-        industry: formData.industry || null,
-        application_deadline: formData.application_deadline || null,
+        title: validated.title,
+        description: validated.description,
+        requirements: validated.requirements || null,
+        duration: validated.duration || null,
+        is_paid: validated.is_paid,
+        salary_info: validated.salary_info || null,
+        location: validated.location,
+        is_remote: validated.is_remote,
+        industry: validated.industry || null,
+        application_deadline: validated.application_deadline || null,
       });
 
     if (error) {

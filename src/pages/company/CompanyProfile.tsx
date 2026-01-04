@@ -17,6 +17,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
 import { Loader2, Save, Upload, Building2 } from 'lucide-react';
+import { companyProfileSchema } from '@/lib/validations';
 
 const industries = [
   'Technology',
@@ -82,16 +83,20 @@ export default function CompanyProfile() {
   };
 
   const handleSave = async () => {
-    if (!formData.company_name.trim()) {
-      toast.error('Company name is required');
+    // Validate with Zod schema
+    const result = companyProfileSchema.safeParse(formData);
+    if (!result.success) {
+      const firstError = result.error.errors[0];
+      toast.error(firstError.message);
       return;
     }
 
     setSaving(true);
 
+    const validated = result.data;
     const { error } = await supabase
       .from('company_profiles')
-      .update(formData)
+      .update(validated)
       .eq('user_id', user?.id);
 
     if (error) {

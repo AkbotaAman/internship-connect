@@ -32,6 +32,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
+import { applicationSchema } from '@/lib/validations';
 
 export default function InternshipDetails() {
   const { id } = useParams<{ id: string }>();
@@ -147,14 +148,23 @@ export default function InternshipDetails() {
       return;
     }
 
+    // Validate cover letter with Zod schema
+    const result = applicationSchema.safeParse({ cover_letter: coverLetter });
+    if (!result.success) {
+      const firstError = result.error.errors[0];
+      toast.error(firstError.message);
+      return;
+    }
+
     setApplying(true);
 
+    const validated = result.data;
     const { error } = await supabase
       .from('applications')
       .insert({
         student_id: studentProfile.id,
         internship_id: id,
-        cover_letter: coverLetter || null,
+        cover_letter: validated.cover_letter || null,
       });
 
     if (error) {
