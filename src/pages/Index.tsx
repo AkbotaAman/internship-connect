@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Layout } from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
@@ -7,6 +7,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { TypewriterText } from '@/components/animations/TypewriterText';
 import { AnimatedCounter } from '@/components/animations/AnimatedCounter';
 import { SearchBarAnimation } from '@/components/animations/SearchBarAnimation';
+import { useParallax, useScrollProgress } from '@/hooks/useParallax';
 import { 
   Briefcase, 
   Building2, 
@@ -56,6 +57,12 @@ export default function Index() {
   const [featuredInternships, setFeaturedInternships] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({ internships: 0, companies: 0, students: 0 });
+  
+  // Parallax effects
+  const { ref: heroRef, offset: heroOffset } = useParallax<HTMLDivElement>({ speed: 0.3 });
+  const { ref: floatRef1, offset: floatOffset1 } = useParallax<HTMLDivElement>({ speed: 0.5, direction: 'down' });
+  const { ref: floatRef2, offset: floatOffset2 } = useParallax<HTMLDivElement>({ speed: 0.4 });
+  const scrollProgress = useScrollProgress();
 
   useEffect(() => {
     fetchFeaturedInternships();
@@ -104,19 +111,36 @@ export default function Index() {
 
   return (
     <Layout>
+      {/* Scroll Progress Bar */}
+      <div 
+        className="fixed top-0 left-0 h-1 bg-gradient-accent z-[60] transition-all duration-150"
+        style={{ width: `${scrollProgress}%` }}
+      />
+
       {/* Skip link for accessibility */}
       <a href="#main-content" className="skip-link">
         Skip to main content
       </a>
 
-      {/* Hero Section - Glassmorphism with mesh gradient */}
+      {/* Hero Section - Glassmorphism with mesh gradient and parallax */}
       <section className="relative overflow-hidden bg-gradient-hero py-28 md:py-36" role="banner">
-        {/* Mesh background pattern */}
-        <div className="absolute inset-0">
+        {/* Mesh background pattern with parallax */}
+        <div className="absolute inset-0" ref={heroRef}>
           <div className="absolute top-0 left-0 w-full h-full bg-mesh" />
-          <div className="absolute top-20 left-10 w-80 h-80 bg-primary-foreground/10 rounded-full blur-3xl animate-float" />
-          <div className="absolute bottom-20 right-10 w-96 h-96 bg-primary-foreground/5 rounded-full blur-3xl animate-float" style={{ animationDelay: '-3s' }} />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary-foreground/5 rounded-full blur-3xl" />
+          <div 
+            ref={floatRef1}
+            className="absolute top-20 left-10 w-80 h-80 bg-primary-foreground/10 rounded-full blur-3xl animate-float" 
+            style={{ transform: `translateY(${floatOffset1}px)` }}
+          />
+          <div 
+            ref={floatRef2}
+            className="absolute bottom-20 right-10 w-96 h-96 bg-primary-foreground/5 rounded-full blur-3xl animate-float" 
+            style={{ transform: `translateY(${floatOffset2}px)`, animationDelay: '-3s' }}
+          />
+          <div 
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary-foreground/5 rounded-full blur-3xl"
+            style={{ transform: `translate(-50%, calc(-50% + ${heroOffset * 0.3}px))` }}
+          />
         </div>
 
         <div className="container mx-auto px-4 relative" id="main-content">

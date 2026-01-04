@@ -37,11 +37,11 @@ export function InternshipCard({ internship }: InternshipCardProps) {
   const isNew = new Date(internship.created_at) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
   
   return (
-    <Card className="group glass-card hover-lift overflow-hidden border-border/50 rounded-2xl">
+    <Card className="group glass-card hover-lift overflow-hidden border-border/50 rounded-2xl transition-all duration-300 hover:border-primary/30">
       <CardContent className="p-6">
         <div className="flex items-start gap-5">
           {/* Company Logo */}
-          <div className="w-14 h-14 rounded-xl bg-secondary flex items-center justify-center flex-shrink-0 overflow-hidden ring-1 ring-border/50">
+          <div className="w-14 h-14 rounded-xl bg-secondary flex items-center justify-center flex-shrink-0 overflow-hidden ring-1 ring-border/50 transition-all duration-300 group-hover:ring-primary/30 group-hover:scale-105">
             {internship.company_profiles.logo_url ? (
               <img 
                 src={internship.company_profiles.logo_url} 
@@ -127,10 +127,10 @@ export function InternshipCard({ internship }: InternshipCardProps) {
             </span>
           )}
         </div>
-        <Button asChild size="sm" className="group/btn rounded-full">
+        <Button asChild size="sm" className="group/btn rounded-full opacity-80 group-hover:opacity-100 transition-opacity">
           <Link to={`/internships/${internship.id}`}>
             View Details
-            <ArrowRight className="w-4 h-4 ml-1 group-hover/btn:translate-x-0.5 transition-transform" aria-hidden="true" />
+            <ArrowRight className="w-4 h-4 ml-1 group-hover/btn:translate-x-1 transition-transform duration-300" aria-hidden="true" />
           </Link>
         </Button>
       </CardFooter>

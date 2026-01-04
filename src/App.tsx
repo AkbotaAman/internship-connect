@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
+import { ThemeProvider } from "next-themes";
 
 // Pages
 import Index from "./pages/Index";
@@ -30,38 +31,40 @@ const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <AuthProvider>
-          <Routes>
-            {/* Public Routes */}
-            <Route path="/" element={<Index />} />
-            <Route path="/auth" element={<Auth />} />
-            <Route path="/internships" element={<Internships />} />
-            <Route path="/internships/:id" element={<InternshipDetails />} />
+    <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <AuthProvider>
+            <Routes>
+              {/* Public Routes */}
+              <Route path="/" element={<Index />} />
+              <Route path="/auth" element={<Auth />} />
+              <Route path="/internships" element={<Internships />} />
+              <Route path="/internships/:id" element={<InternshipDetails />} />
 
-            {/* Student Routes */}
-            <Route path="/student/dashboard" element={<StudentDashboard />} />
-            <Route path="/student/profile" element={<StudentProfile />} />
-            <Route path="/student/applications" element={<StudentApplications />} />
+              {/* Student Routes */}
+              <Route path="/student/dashboard" element={<StudentDashboard />} />
+              <Route path="/student/profile" element={<StudentProfile />} />
+              <Route path="/student/applications" element={<StudentApplications />} />
 
-            {/* Company Routes */}
-            <Route path="/company/dashboard" element={<CompanyDashboard />} />
-            <Route path="/company/profile" element={<CompanyProfile />} />
-            <Route path="/company/internships/new" element={<NewInternship />} />
-            <Route path="/company/applicants" element={<CompanyApplicants />} />
+              {/* Company Routes */}
+              <Route path="/company/dashboard" element={<CompanyDashboard />} />
+              <Route path="/company/profile" element={<CompanyProfile />} />
+              <Route path="/company/internships/new" element={<NewInternship />} />
+              <Route path="/company/applicants" element={<CompanyApplicants />} />
 
-            {/* Admin Routes */}
-            <Route path="/admin/dashboard" element={<AdminDashboard />} />
+              {/* Admin Routes */}
+              <Route path="/admin/dashboard" element={<AdminDashboard />} />
 
-            {/* Catch-all */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </AuthProvider>
-      </BrowserRouter>
-    </TooltipProvider>
+              {/* Catch-all */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </AuthProvider>
+        </BrowserRouter>
+      </TooltipProvider>
+    </ThemeProvider>
   </QueryClientProvider>
 );
 
