@@ -27,8 +27,8 @@
     --muted: 220 15% 91%;
     --muted-foreground: 220 10% 45%;
 
-    /* Warm coral accent - high contrast for CTAs */
-    --accent: 14 90% 58%;
+    /* Warm coral accent - improved contrast for readability */
+    --accent: 25 100% 50%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 72% 51%;
@@ -253,12 +253,12 @@
     animation: blurIn 0.6s ease-out forwards;
   }
 
-  /* Hover effects */
+  /* Hover effects - Enhanced micro-interactions */
   .hover-lift {
-    @apply transition-all duration-300;
+    @apply transition-all duration-300 ease-out;
   }
   .hover-lift:hover {
-    transform: translateY(-4px);
+    transform: translateY(-6px) scale(1.01);
     box-shadow: var(--shadow-xl);
   }
 
@@ -269,9 +269,49 @@
     box-shadow: var(--shadow-glow);
   }
 
+  /* Interactive card effects */
+  .hover-card-3d {
+    @apply transition-all duration-300 ease-out;
+    transform-style: preserve-3d;
+    perspective: 1000px;
+  }
+  .hover-card-3d:hover {
+    transform: translateY(-4px) rotateX(2deg);
+    box-shadow: var(--shadow-xl);
+  }
+
+  /* Button micro-interactions */
+  .btn-bounce {
+    @apply transition-all duration-200 ease-out;
+  }
+  .btn-bounce:hover {
+    transform: translateY(-2px);
+  }
+  .btn-bounce:active {
+    transform: translateY(0) scale(0.98);
+  }
+
+  /* Icon spin on hover */
+  .icon-spin-hover {
+    @apply transition-transform duration-500 ease-out;
+  }
+  .icon-spin-hover:hover {
+    transform: rotate(360deg);
+  }
+
+  /* Pulse glow effect */
+  .pulse-glow {
+    animation: pulseGlow 2s ease-in-out infinite;
+  }
+
   /* Skip link for accessibility */
   .skip-link {
     @apply sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground focus:rounded-lg;
+  }
+
+  /* Smooth scroll */
+  html {
+    scroll-behavior: smooth;
   }
 }
 
@@ -344,5 +384,25 @@
   }
   50% {
     background-position: 100% 50%;
+  }
+}
+
+/* Pulse glow animation */
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 20px hsl(var(--primary) / 0.3);
+  }
+  50% {
+    box-shadow: 0 0 40px hsl(var(--primary) / 0.5);
+  }
+}
+
+/* Shimmer effect for loading states */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
   }
 }
