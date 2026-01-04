@@ -45,13 +45,13 @@ export function Navbar() {
   };
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 glass border-b border-border/50">
+    <nav className="fixed top-0 left-0 right-0 z-50 glass" role="navigation" aria-label="Main navigation">
       <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-16">
+        <div className="flex items-center justify-between h-18 py-3">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2 group">
-            <div className="w-9 h-9 rounded-lg bg-gradient-hero flex items-center justify-center shadow-md group-hover:shadow-glow transition-shadow duration-300">
-              <Briefcase className="w-5 h-5 text-primary-foreground" />
+          <Link to="/" className="flex items-center gap-3 group" aria-label="InternHub home">
+            <div className="w-10 h-10 rounded-xl bg-gradient-hero flex items-center justify-center shadow-md group-hover:shadow-glow transition-all duration-300">
+              <Briefcase className="w-5 h-5 text-primary-foreground" aria-hidden="true" />
             </div>
             <span className="text-xl font-bold text-foreground">
               Intern<span className="text-gradient">Hub</span>
@@ -59,19 +59,21 @@ export function Navbar() {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-6">
+          <div className="hidden md:flex items-center gap-8">
             <Link 
               to="/internships" 
-              className="text-muted-foreground hover:text-foreground transition-colors font-medium"
+              className="text-muted-foreground hover:text-foreground transition-colors font-medium relative group"
             >
               Browse Internships
+              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary group-hover:w-full transition-all duration-300" />
             </Link>
             {user && profile?.role === 'company' && (
               <Link 
                 to="/company/internships/new" 
-                className="text-muted-foreground hover:text-foreground transition-colors font-medium"
+                className="text-muted-foreground hover:text-foreground transition-colors font-medium relative group"
               >
                 Post Internship
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary group-hover:w-full transition-all duration-300" />
               </Link>
             )}
           </div>
@@ -81,38 +83,45 @@ export function Navbar() {
             {user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="gap-2">
-                    <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                  <Button variant="ghost" className="gap-3 pl-2 pr-4" aria-label="User menu">
+                    <div className="w-9 h-9 rounded-xl bg-gradient-primary flex items-center justify-center">
                       {profile?.role === 'company' ? (
-                        <Building2 className="w-4 h-4 text-primary" />
+                        <Building2 className="w-4 h-4 text-primary-foreground" aria-hidden="true" />
                       ) : (
-                        <GraduationCap className="w-4 h-4 text-primary" />
+                        <GraduationCap className="w-4 h-4 text-primary-foreground" aria-hidden="true" />
                       )}
                     </div>
-                    <span className="max-w-32 truncate">{user.email}</span>
+                    <span className="max-w-32 truncate font-medium">{user.email}</span>
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-56">
-                  <DropdownMenuItem onClick={() => navigate(getDashboardLink())}>
-                    <LayoutDashboard className="w-4 h-4 mr-2" />
+                <DropdownMenuContent align="end" className="w-56 glass-card rounded-xl p-2">
+                  <DropdownMenuItem 
+                    onClick={() => navigate(getDashboardLink())} 
+                    className="rounded-lg cursor-pointer"
+                  >
+                    <LayoutDashboard className="w-4 h-4 mr-3" aria-hidden="true" />
                     Dashboard
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => navigate(
-                    profile?.role === 'company' ? '/company/profile' : '/student/profile'
-                  )}>
-                    <User className="w-4 h-4 mr-2" />
+                  <DropdownMenuItem 
+                    onClick={() => navigate(profile?.role === 'company' ? '/company/profile' : '/student/profile')}
+                    className="rounded-lg cursor-pointer"
+                  >
+                    <User className="w-4 h-4 mr-3" aria-hidden="true" />
                     Profile
                   </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={handleSignOut} className="text-destructive">
-                    <LogOut className="w-4 h-4 mr-2" />
+                  <DropdownMenuSeparator className="my-2" />
+                  <DropdownMenuItem 
+                    onClick={handleSignOut} 
+                    className="text-destructive rounded-lg cursor-pointer focus:bg-destructive/10 focus:text-destructive"
+                  >
+                    <LogOut className="w-4 h-4 mr-3" aria-hidden="true" />
                     Sign Out
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
               <>
-                <Button variant="ghost" onClick={() => navigate('/auth?mode=signin')}>
+                <Button variant="ghost" onClick={() => navigate('/auth?mode=signin')} className="font-medium">
                   Sign In
                 </Button>
                 <Button variant="accent" onClick={() => navigate('/auth?mode=signup')}>
@@ -124,56 +133,72 @@ export function Navbar() {
 
           {/* Mobile Menu Button */}
           <button
-            className="md:hidden p-2 text-muted-foreground hover:text-foreground"
+            className="md:hidden p-2.5 rounded-xl text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-expanded={mobileMenuOpen}
+            aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
           >
-            {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            {mobileMenuOpen ? <X className="w-6 h-6" aria-hidden="true" /> : <Menu className="w-6 h-6" aria-hidden="true" />}
           </button>
         </div>
 
         {/* Mobile Menu */}
         {mobileMenuOpen && (
-          <div className="md:hidden py-4 border-t border-border/50 animate-fade-in">
-            <div className="flex flex-col gap-3">
+          <div className="md:hidden py-6 border-t border-border/50 animate-fade-in" role="menu">
+            <div className="flex flex-col gap-2">
               <Link 
                 to="/internships" 
-                className="px-4 py-2 text-muted-foreground hover:text-foreground transition-colors"
+                className="px-4 py-3 text-foreground hover:bg-secondary rounded-xl transition-colors font-medium"
                 onClick={() => setMobileMenuOpen(false)}
+                role="menuitem"
               >
                 Browse Internships
               </Link>
               {user && profile?.role === 'company' && (
                 <Link 
                   to="/company/internships/new" 
-                  className="px-4 py-2 text-muted-foreground hover:text-foreground transition-colors"
+                  className="px-4 py-3 text-foreground hover:bg-secondary rounded-xl transition-colors font-medium"
                   onClick={() => setMobileMenuOpen(false)}
+                  role="menuitem"
                 >
                   Post Internship
                 </Link>
               )}
-              <div className="border-t border-border/50 pt-3 mt-2">
+              <div className="border-t border-border/50 pt-4 mt-2">
                 {user ? (
                   <>
                     <Link 
                       to={getDashboardLink()}
-                      className="block px-4 py-2 text-muted-foreground hover:text-foreground"
+                      className="flex items-center gap-3 px-4 py-3 text-foreground hover:bg-secondary rounded-xl font-medium"
                       onClick={() => setMobileMenuOpen(false)}
+                      role="menuitem"
                     >
+                      <LayoutDashboard className="w-5 h-5" aria-hidden="true" />
                       Dashboard
                     </Link>
                     <button 
                       onClick={() => { handleSignOut(); setMobileMenuOpen(false); }}
-                      className="w-full text-left px-4 py-2 text-destructive hover:bg-destructive/10 rounded-lg"
+                      className="w-full flex items-center gap-3 px-4 py-3 text-destructive hover:bg-destructive/10 rounded-xl font-medium mt-2"
+                      role="menuitem"
                     >
+                      <LogOut className="w-5 h-5" aria-hidden="true" />
                       Sign Out
                     </button>
                   </>
                 ) : (
-                  <div className="flex flex-col gap-2 px-4">
-                    <Button variant="ghost" onClick={() => { navigate('/auth?mode=signin'); setMobileMenuOpen(false); }}>
+                  <div className="flex flex-col gap-3 px-4">
+                    <Button 
+                      variant="outline" 
+                      onClick={() => { navigate('/auth?mode=signin'); setMobileMenuOpen(false); }}
+                      className="w-full justify-center"
+                    >
                       Sign In
                     </Button>
-                    <Button variant="accent" onClick={() => { navigate('/auth?mode=signup'); setMobileMenuOpen(false); }}>
+                    <Button 
+                      variant="accent" 
+                      onClick={() => { navigate('/auth?mode=signup'); setMobileMenuOpen(false); }}
+                      className="w-full justify-center"
+                    >
                       Get Started
                     </Button>
                   </div>
