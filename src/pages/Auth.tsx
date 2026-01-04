@@ -135,7 +135,7 @@ export default function Auth() {
           <Card className="border-border/50 shadow-xl">
             <CardHeader className="text-center pb-2">
               <div className="w-14 h-14 rounded-xl bg-gradient-hero flex items-center justify-center mx-auto mb-4 shadow-glow">
-                <Briefcase className="w-7 h-7 text-primary-foreground" />
+                <Briefcase className="w-7 h-7 text-white" />
               </div>
               <CardTitle className="text-2xl">
                 {mode === 'signin' ? 'Welcome Back' : 'Create Account'}

@@ -148,12 +148,12 @@ export default function Index() {
             {/* Badge */}
             <div className="inline-flex items-center gap-2 glass-dark rounded-full px-5 py-2.5 mb-8 animate-fade-up">
               <Sparkles className="w-4 h-4 text-accent" aria-hidden="true" />
-              <span className="text-sm font-medium text-primary-foreground">
+              <span className="text-sm font-medium text-white">
                 Your career starts here
               </span>
             </div>
 
-            <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-primary-foreground mb-6 animate-fade-up leading-tight" style={{ animationDelay: '0.1s' }}>
+            <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-6 animate-fade-up leading-tight" style={{ animationDelay: '0.1s' }}>
               Find Your{' '}
               <TypewriterText 
                 words={['Perfect', 'Dream', 'Ideal', 'Next']} 
@@ -163,10 +163,10 @@ export default function Index() {
                 delayBetweenWords={2500}
               />
               <br />
-              <span className="text-primary-foreground/90">Internship Match</span>
+              <span className="text-white/90">Internship Match</span>
             </h1>
 
-            <p className="text-lg md:text-xl text-primary-foreground/80 mb-12 max-w-2xl mx-auto animate-fade-up leading-relaxed" style={{ animationDelay: '0.2s' }}>
+            <p className="text-lg md:text-xl text-white/80 mb-12 max-w-2xl mx-auto animate-fade-up leading-relaxed" style={{ animationDelay: '0.2s' }}>
               Connect with innovative companies and launch your career with 
               meaningful experiences designed around your goals.
             </p>
@@ -391,10 +391,10 @@ export default function Index() {
             </div>
             
             <div className="relative">
-              <h2 className="text-3xl md:text-5xl font-bold text-primary-foreground mb-6 leading-tight">
+              <h2 className="text-3xl md:text-5xl font-bold text-white mb-6 leading-tight">
                 Ready to Launch<br />Your Career?
               </h2>
-              <p className="text-primary-foreground/80 text-lg md:text-xl mb-10 max-w-2xl mx-auto leading-relaxed">
+              <p className="text-white/80 text-lg md:text-xl mb-10 max-w-2xl mx-auto leading-relaxed">
                 Join thousands of students and companies already using InternHub 
                 to build meaningful connections and shape the future workforce.
               </p>
