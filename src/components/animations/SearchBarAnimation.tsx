@@ -84,10 +84,10 @@ export function SearchBarAnimation({ onSearch }: SearchBarAnimationProps) {
 
   return (
     <form onSubmit={handleSearch} role="search" aria-label="Search internships">
-      <div className="flex flex-col sm:flex-row gap-3 p-3 glass-dark rounded-2xl">
+      <div className="flex flex-col sm:flex-row gap-3 p-3 bg-background/20 dark:bg-background/40 backdrop-blur-xl rounded-2xl border border-border/20">
         <div className="flex-1 relative">
           <Search 
-            className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-primary-foreground/50" 
+            className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-foreground/50" 
             aria-hidden="true" 
           />
           <Input
@@ -96,14 +96,14 @@ export function SearchBarAnimation({ onSearch }: SearchBarAnimationProps) {
             onChange={(e) => setSearchQuery(e.target.value)}
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}
-            className="h-14 pl-12 bg-primary-foreground/10 border-0 text-primary-foreground placeholder:text-primary-foreground/40 focus-visible:ring-primary-foreground/30 rounded-xl transition-all"
+            className="h-14 pl-12 bg-background/30 dark:bg-background/50 border-border/30 text-foreground placeholder:text-foreground/50 focus-visible:ring-primary/30 rounded-xl transition-all"
             aria-label="Search internships"
           />
           {!isFocused && !searchQuery && (
-            <span className="absolute right-4 top-1/2 -translate-y-1/2 w-[2px] h-6 bg-primary-foreground/40 animate-blink pointer-events-none" />
+            <span className="absolute right-4 top-1/2 -translate-y-1/2 w-[2px] h-6 bg-foreground/40 animate-blink pointer-events-none" />
           )}
         </div>
-        <Button type="submit" size="xl" variant="accent" className="sm:w-auto w-full">
+        <Button type="submit" size="xl" variant="accent" className="sm:w-auto w-full text-accent-foreground">
           <Search className="w-5 h-5 mr-2" aria-hidden="true" />
           Search
         </Button>
