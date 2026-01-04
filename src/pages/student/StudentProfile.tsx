@@ -19,6 +19,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
 import { Loader2, Save, Plus, X, Upload, FileText, Github, Linkedin, Globe, ExternalLink, Twitter } from 'lucide-react';
 import type { Database } from '@/integrations/supabase/types';
+import { studentProfileSchema } from '@/lib/validations';
 
 type EducationLevel = Database['public']['Enums']['education_level'];
 
@@ -127,23 +128,32 @@ export default function StudentProfile() {
   };
 
   const handleSave = async () => {
+    // Validate with Zod schema
+    const result = studentProfileSchema.safeParse(formData);
+    if (!result.success) {
+      const firstError = result.error.errors[0];
+      toast.error(firstError.message);
+      return;
+    }
+
     setSaving(true);
 
+    const validated = result.data;
     const { error } = await supabase
       .from('student_profiles')
       .update({
-        full_name: formData.full_name,
-        education_level: formData.education_level,
-        skills: formData.skills,
-        interests: formData.interests,
-        location: formData.location,
-        bio: formData.bio,
-        resume_url: formData.resume_url,
-        github_url: formData.github_url,
-        linkedin_url: formData.linkedin_url,
-        twitter_url: formData.twitter_url,
-        portfolio_url: formData.portfolio_url,
-        projects: formData.projects,
+        full_name: validated.full_name,
+        education_level: validated.education_level,
+        skills: validated.skills,
+        interests: validated.interests,
+        location: validated.location,
+        bio: validated.bio,
+        resume_url: validated.resume_url,
+        github_url: validated.github_url,
+        linkedin_url: validated.linkedin_url,
+        twitter_url: validated.twitter_url,
+        portfolio_url: validated.portfolio_url,
+        projects: validated.projects,
       } as any)
       .eq('user_id', user?.id);
 
