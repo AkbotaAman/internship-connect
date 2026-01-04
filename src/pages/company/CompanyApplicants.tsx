@@ -99,7 +99,7 @@ export default function CompanyApplicants() {
     setLoading(false);
   };
 
-  const updateStatus = async (applicationId: string, newStatus: string) => {
+  const updateStatus = async (applicationId: string, newStatus: 'applied' | 'reviewed' | 'accepted' | 'rejected') => {
     setUpdating(true);
 
     const { error } = await supabase
@@ -266,7 +266,7 @@ export default function CompanyApplicants() {
                     </div>
                     <Select
                       value={selectedApplication.status}
-                      onValueChange={(value) => updateStatus(selectedApplication.id, value)}
+                      onValueChange={(value: 'applied' | 'reviewed' | 'accepted' | 'rejected') => updateStatus(selectedApplication.id, value)}
                       disabled={updating}
                     >
                       <SelectTrigger className="w-40">

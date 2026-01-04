@@ -79,9 +79,11 @@ export function Footer() {
         </div>
 
         <div className="border-t border-border mt-8 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} InternHub. All rights reserved.
-          </p>
+          <div className="flex flex-col sm:flex-row items-center gap-2 text-sm text-muted-foreground">
+            <p>© {new Date().getFullYear()} InternHub. All rights reserved.</p>
+            <span className="hidden sm:inline">•</span>
+            <p>Built by <span className="font-semibold text-foreground">A² Solutions</span></p>
+          </div>
           <div className="flex gap-6 text-sm">
             <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
               Privacy Policy

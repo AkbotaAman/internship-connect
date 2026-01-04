@@ -18,8 +18,11 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
 import { Loader2, Save, Plus, X, Upload, FileText } from 'lucide-react';
+import type { Database } from '@/integrations/supabase/types';
 
-const educationLevels = [
+type EducationLevel = Database['public']['Enums']['education_level'];
+
+const educationLevels: { value: EducationLevel; label: string }[] = [
   { value: 'high_school', label: 'High School' },
   { value: 'university', label: 'University' },
   { value: 'graduate', label: 'Graduate' },
@@ -41,11 +44,19 @@ export default function StudentProfile() {
   const [skillInput, setSkillInput] = useState('');
   const [interestInput, setInterestInput] = useState('');
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<{
+    full_name: string;
+    education_level: EducationLevel;
+    skills: string[];
+    interests: string[];
+    location: string;
+    bio: string;
+    resume_url: string;
+  }>({
     full_name: '',
     education_level: 'university',
-    skills: [] as string[],
-    interests: [] as string[],
+    skills: [],
+    interests: [],
     location: '',
     bio: '',
     resume_url: '',
@@ -212,8 +223,8 @@ export default function StudentProfile() {
               <div>
                 <Label htmlFor="education">Education Level</Label>
                 <Select
-                  value={formData.education_level}
-                  onValueChange={(value) => setFormData({ ...formData, education_level: value })}
+                  value={formData.education_level as string}
+                  onValueChange={(value: EducationLevel) => setFormData({ ...formData, education_level: value })}
                 >
                   <SelectTrigger className="mt-1.5">
                     <SelectValue />
