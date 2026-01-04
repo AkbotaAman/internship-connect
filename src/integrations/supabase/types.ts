@@ -194,11 +194,16 @@ export type Database = {
           created_at: string
           education_level: Database["public"]["Enums"]["education_level"] | null
           full_name: string
+          github_url: string | null
           id: string
           interests: string[] | null
+          linkedin_url: string | null
           location: string | null
+          portfolio_url: string | null
+          projects: Json | null
           resume_url: string | null
           skills: string[] | null
+          twitter_url: string | null
           updated_at: string
           user_id: string
         }
@@ -210,11 +215,16 @@ export type Database = {
             | Database["public"]["Enums"]["education_level"]
             | null
           full_name?: string
+          github_url?: string | null
           id?: string
           interests?: string[] | null
+          linkedin_url?: string | null
           location?: string | null
+          portfolio_url?: string | null
+          projects?: Json | null
           resume_url?: string | null
           skills?: string[] | null
+          twitter_url?: string | null
           updated_at?: string
           user_id: string
         }
@@ -226,11 +236,16 @@ export type Database = {
             | Database["public"]["Enums"]["education_level"]
             | null
           full_name?: string
+          github_url?: string | null
           id?: string
           interests?: string[] | null
+          linkedin_url?: string | null
           location?: string | null
+          portfolio_url?: string | null
+          projects?: Json | null
           resume_url?: string | null
           skills?: string[] | null
+          twitter_url?: string | null
           updated_at?: string
           user_id?: string
         }

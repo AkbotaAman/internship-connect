@@ -17,10 +17,17 @@ import {
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
-import { Loader2, Save, Plus, X, Upload, FileText } from 'lucide-react';
+import { Loader2, Save, Plus, X, Upload, FileText, Github, Linkedin, Globe, ExternalLink, Twitter } from 'lucide-react';
 import type { Database } from '@/integrations/supabase/types';
 
 type EducationLevel = Database['public']['Enums']['education_level'];
+
+interface Project {
+  title: string;
+  description: string;
+  url: string;
+  technologies: string[];
+}
 
 const educationLevels: { value: EducationLevel; label: string }[] = [
   { value: 'high_school', label: 'High School' },
@@ -44,6 +51,15 @@ export default function StudentProfile() {
   const [skillInput, setSkillInput] = useState('');
   const [interestInput, setInterestInput] = useState('');
 
+  // New project form state
+  const [newProject, setNewProject] = useState<Project>({
+    title: '',
+    description: '',
+    url: '',
+    technologies: [],
+  });
+  const [techInput, setTechInput] = useState('');
+
   const [formData, setFormData] = useState<{
     full_name: string;
     education_level: EducationLevel;
@@ -52,6 +68,11 @@ export default function StudentProfile() {
     location: string;
     bio: string;
     resume_url: string;
+    github_url: string;
+    linkedin_url: string;
+    twitter_url: string;
+    portfolio_url: string;
+    projects: Project[];
   }>({
     full_name: '',
     education_level: 'university',
@@ -60,6 +81,11 @@ export default function StudentProfile() {
     location: '',
     bio: '',
     resume_url: '',
+    github_url: '',
+    linkedin_url: '',
+    twitter_url: '',
+    portfolio_url: '',
+    projects: [],
   });
 
   useEffect(() => {
@@ -90,6 +116,11 @@ export default function StudentProfile() {
         location: data.location || '',
         bio: data.bio || '',
         resume_url: data.resume_url || '',
+        github_url: (data as any).github_url || '',
+        linkedin_url: (data as any).linkedin_url || '',
+        twitter_url: (data as any).twitter_url || '',
+        portfolio_url: (data as any).portfolio_url || '',
+        projects: ((data as any).projects as Project[]) || [],
       });
     }
     setLoading(false);
@@ -100,7 +131,20 @@ export default function StudentProfile() {
 
     const { error } = await supabase
       .from('student_profiles')
-      .update(formData)
+      .update({
+        full_name: formData.full_name,
+        education_level: formData.education_level,
+        skills: formData.skills,
+        interests: formData.interests,
+        location: formData.location,
+        bio: formData.bio,
+        resume_url: formData.resume_url,
+        github_url: formData.github_url,
+        linkedin_url: formData.linkedin_url,
+        twitter_url: formData.twitter_url,
+        portfolio_url: formData.portfolio_url,
+        projects: formData.projects,
+      } as any)
       .eq('user_id', user?.id);
 
     if (error) {
@@ -139,7 +183,6 @@ export default function StudentProfile() {
       return;
     }
 
-    // Store the file path instead of public URL since bucket is private
     setFormData({ ...formData, resume_url: fileName });
     toast.success('Resume uploaded successfully!');
     setUploading(false);
@@ -167,6 +210,32 @@ export default function StudentProfile() {
 
   const removeInterest = (interest: string) => {
     setFormData({ ...formData, interests: formData.interests.filter(i => i !== interest) });
+  };
+
+  // Project management
+  const addTechToProject = (tech: string) => {
+    const trimmed = tech.trim();
+    if (trimmed && !newProject.technologies.includes(trimmed)) {
+      setNewProject({ ...newProject, technologies: [...newProject.technologies, trimmed] });
+    }
+    setTechInput('');
+  };
+
+  const removeTechFromProject = (tech: string) => {
+    setNewProject({ ...newProject, technologies: newProject.technologies.filter(t => t !== tech) });
+  };
+
+  const addProject = () => {
+    if (!newProject.title.trim()) {
+      toast.error('Please enter a project title');
+      return;
+    }
+    setFormData({ ...formData, projects: [...formData.projects, newProject] });
+    setNewProject({ title: '', description: '', url: '', technologies: [] });
+  };
+
+  const removeProject = (index: number) => {
+    setFormData({ ...formData, projects: formData.projects.filter((_, i) => i !== index) });
   };
 
   if (authLoading || loading) {
@@ -245,6 +314,164 @@ export default function StudentProfile() {
                   placeholder="Tell employers about yourself, your goals, and what you're looking for..."
                   className="mt-1.5 min-h-32"
                 />
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Social Media Links */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Social Links</CardTitle>
+              <CardDescription>Connect your professional profiles</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center gap-3">
+                <Github className="w-5 h-5 text-muted-foreground flex-shrink-0" />
+                <Input
+                  value={formData.github_url}
+                  onChange={(e) => setFormData({ ...formData, github_url: e.target.value })}
+                  placeholder="https://github.com/username"
+                />
+              </div>
+              <div className="flex items-center gap-3">
+                <Linkedin className="w-5 h-5 text-muted-foreground flex-shrink-0" />
+                <Input
+                  value={formData.linkedin_url}
+                  onChange={(e) => setFormData({ ...formData, linkedin_url: e.target.value })}
+                  placeholder="https://linkedin.com/in/username"
+                />
+              </div>
+              <div className="flex items-center gap-3">
+                <Twitter className="w-5 h-5 text-muted-foreground flex-shrink-0" />
+                <Input
+                  value={formData.twitter_url}
+                  onChange={(e) => setFormData({ ...formData, twitter_url: e.target.value })}
+                  placeholder="https://twitter.com/username"
+                />
+              </div>
+              <div className="flex items-center gap-3">
+                <Globe className="w-5 h-5 text-muted-foreground flex-shrink-0" />
+                <Input
+                  value={formData.portfolio_url}
+                  onChange={(e) => setFormData({ ...formData, portfolio_url: e.target.value })}
+                  placeholder="https://yourportfolio.com"
+                />
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Projects */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Projects</CardTitle>
+              <CardDescription>Showcase your work to employers</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {/* Existing Projects */}
+              {formData.projects.length > 0 && (
+                <div className="space-y-3">
+                  {formData.projects.map((project, index) => (
+                    <div key={index} className="p-4 bg-secondary/30 rounded-lg relative group">
+                      <button
+                        onClick={() => removeProject(index)}
+                        className="absolute top-2 right-2 p-1 text-muted-foreground hover:text-destructive opacity-0 group-hover:opacity-100 transition-opacity"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                      <div className="flex items-start gap-3">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2">
+                            <h4 className="font-semibold text-foreground">{project.title}</h4>
+                            {project.url && (
+                              <a
+                                href={project.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-primary hover:text-primary/80"
+                              >
+                                <ExternalLink className="w-4 h-4" />
+                              </a>
+                            )}
+                          </div>
+                          {project.description && (
+                            <p className="text-sm text-muted-foreground mt-1">{project.description}</p>
+                          )}
+                          {project.technologies.length > 0 && (
+                            <div className="flex flex-wrap gap-1 mt-2">
+                              {project.technologies.map((tech) => (
+                                <Badge key={tech} variant="outline" className="text-xs">
+                                  {tech}
+                                </Badge>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Add New Project Form */}
+              <div className="border border-border rounded-lg p-4 space-y-3">
+                <h4 className="font-medium text-foreground">Add New Project</h4>
+                <div>
+                  <Input
+                    value={newProject.title}
+                    onChange={(e) => setNewProject({ ...newProject, title: e.target.value })}
+                    placeholder="Project Title"
+                  />
+                </div>
+                <div>
+                  <Textarea
+                    value={newProject.description}
+                    onChange={(e) => setNewProject({ ...newProject, description: e.target.value })}
+                    placeholder="Brief description of the project..."
+                    className="min-h-20"
+                  />
+                </div>
+                <div>
+                  <Input
+                    value={newProject.url}
+                    onChange={(e) => setNewProject({ ...newProject, url: e.target.value })}
+                    placeholder="Project URL (optional)"
+                  />
+                </div>
+                <div>
+                  <div className="flex flex-wrap gap-2 mb-2">
+                    {newProject.technologies.map((tech) => (
+                      <Badge key={tech} variant="secondary" className="gap-1 pr-1">
+                        {tech}
+                        <button
+                          onClick={() => removeTechFromProject(tech)}
+                          className="ml-1 p-0.5 hover:bg-muted rounded"
+                        >
+                          <X className="w-3 h-3" />
+                        </button>
+                      </Badge>
+                    ))}
+                  </div>
+                  <div className="flex gap-2">
+                    <Input
+                      value={techInput}
+                      onChange={(e) => setTechInput(e.target.value)}
+                      placeholder="Add technology (e.g., React, Python)"
+                      onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addTechToProject(techInput))}
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => addTechToProject(techInput)}
+                    >
+                      <Plus className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </div>
+                <Button type="button" variant="secondary" onClick={addProject} className="w-full">
+                  <Plus className="w-4 h-4 mr-2" />
+                  Add Project
+                </Button>
               </div>
             </CardContent>
           </Card>
@@ -345,10 +572,10 @@ export default function StudentProfile() {
             </CardContent>
           </Card>
 
-          {/* Resume */}
+          {/* Resume (Optional) */}
           <Card>
             <CardHeader>
-              <CardTitle>Resume</CardTitle>
+              <CardTitle>Resume (Optional)</CardTitle>
               <CardDescription>Upload your resume (PDF, max 5MB)</CardDescription>
             </CardHeader>
             <CardContent>
@@ -359,10 +586,9 @@ export default function StudentProfile() {
                     <p className="font-medium text-foreground">Resume uploaded</p>
                     <button
                       onClick={async () => {
-                        // Get a signed URL for private bucket
                         const { data, error } = await supabase.storage
                           .from('resumes')
-                          .createSignedUrl(formData.resume_url, 3600); // 1 hour expiry
+                          .createSignedUrl(formData.resume_url, 3600);
                         
                         if (data?.signedUrl) {
                           window.open(data.signedUrl, '_blank');
