@@ -2,11 +2,12 @@ import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Layout } from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { InternshipCard } from '@/components/internships/InternshipCard';
 import { supabase } from '@/integrations/supabase/client';
+import { TypewriterText } from '@/components/animations/TypewriterText';
+import { AnimatedCounter } from '@/components/animations/AnimatedCounter';
+import { SearchBarAnimation } from '@/components/animations/SearchBarAnimation';
 import { 
-  Search, 
   Briefcase, 
   Building2, 
   GraduationCap,
@@ -14,6 +15,7 @@ import {
   Sparkles,
   Users,
   Target,
+  Search,
   Star,
   Quote
 } from 'lucide-react';
@@ -51,7 +53,6 @@ const testimonials = [
 
 export default function Index() {
   const navigate = useNavigate();
-  const [searchQuery, setSearchQuery] = useState('');
   const [featuredInternships, setFeaturedInternships] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({ internships: 0, companies: 0, students: 0 });
@@ -97,9 +98,8 @@ export default function Index() {
     });
   };
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    navigate(`/internships?q=${encodeURIComponent(searchQuery)}`);
+  const handleSearch = (query: string) => {
+    navigate(`/internships?q=${encodeURIComponent(query)}`);
   };
 
   return (
@@ -130,7 +130,14 @@ export default function Index() {
             </div>
 
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-primary-foreground mb-6 animate-fade-up leading-tight" style={{ animationDelay: '0.1s' }}>
-              Find Your Perfect
+              Find Your{' '}
+              <TypewriterText 
+                words={['Perfect', 'Dream', 'Ideal', 'Next']} 
+                className="text-accent"
+                typeSpeed={120}
+                deleteSpeed={80}
+                delayBetweenWords={2500}
+              />
               <br />
               <span className="text-primary-foreground/90">Internship Match</span>
             </h1>
@@ -140,25 +147,10 @@ export default function Index() {
               meaningful experiences designed around your goals.
             </p>
 
-            {/* Search Bar - Glassmorphism */}
-            <form onSubmit={handleSearch} className="max-w-2xl mx-auto animate-fade-up" style={{ animationDelay: '0.3s' }} role="search" aria-label="Search internships">
-              <div className="flex flex-col sm:flex-row gap-3 p-3 glass-dark rounded-2xl">
-                <div className="flex-1 relative">
-                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-primary-foreground/50" aria-hidden="true" />
-                  <Input
-                    placeholder="Search internships, companies, or skills..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="h-14 pl-12 bg-primary-foreground/10 border-0 text-primary-foreground placeholder:text-primary-foreground/40 focus-visible:ring-primary-foreground/30 rounded-xl"
-                    aria-label="Search internships"
-                  />
-                </div>
-                <Button type="submit" size="xl" variant="accent" className="sm:w-auto w-full">
-                  <Search className="w-5 h-5 mr-2" aria-hidden="true" />
-                  Search
-                </Button>
-              </div>
-            </form>
+            {/* Search Bar with Typing Animation */}
+            <div className="max-w-2xl mx-auto animate-fade-up" style={{ animationDelay: '0.3s' }}>
+              <SearchBarAnimation onSearch={handleSearch} />
+            </div>
 
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-10 animate-fade-up" style={{ animationDelay: '0.4s' }}>
@@ -185,19 +177,24 @@ export default function Index() {
         <div className="container mx-auto px-4 relative">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 -mt-20">
             {[
-              { icon: Briefcase, value: stats.internships, label: "Active Internships", color: "primary" },
-              { icon: Building2, value: stats.companies, label: "Companies", color: "accent" },
-              { icon: Users, value: stats.students, label: "Students", color: "success" },
+              { icon: Briefcase, value: stats.internships, label: "Active Internships", color: "primary", bgColor: "bg-primary/10", textColor: "text-primary" },
+              { icon: Building2, value: stats.companies, label: "Companies", color: "accent", bgColor: "bg-accent/10", textColor: "text-accent" },
+              { icon: Users, value: stats.students, label: "Students", color: "success", bgColor: "bg-success/10", textColor: "text-success" },
             ].map((stat, index) => (
               <div 
                 key={index}
                 className="glass-card rounded-2xl p-8 text-center hover-lift animate-fade-up"
                 style={{ animationDelay: `${0.1 * index}s` }}
               >
-                <div className={`inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-${stat.color}/10 mb-5`}>
-                  <stat.icon className={`w-8 h-8 text-${stat.color}`} aria-hidden="true" />
+                <div className={`inline-flex items-center justify-center w-16 h-16 rounded-2xl ${stat.bgColor} mb-5`}>
+                  <stat.icon className={`w-8 h-8 ${stat.textColor}`} aria-hidden="true" />
                 </div>
-                <div className="text-4xl font-bold text-foreground mb-2">{stat.value}+</div>
+                <AnimatedCounter 
+                  end={stat.value} 
+                  duration={2500} 
+                  suffix="+"
+                  className="text-4xl font-bold text-foreground mb-2"
+                />
                 <div className="text-muted-foreground font-medium">{stat.label}</div>
               </div>
             ))}
