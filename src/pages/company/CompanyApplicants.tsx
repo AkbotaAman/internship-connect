@@ -312,16 +312,32 @@ export default function CompanyApplicants() {
                   {selectedApplication.student_profiles?.resume_url && (
                     <div>
                       <h4 className="font-semibold text-foreground mb-2">Resume</h4>
-                      <a
-                        href={selectedApplication.student_profiles.resume_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
+                      <button
+                        onClick={async () => {
+                          const resumePath = selectedApplication.student_profiles.resume_url;
+                          // Check if it's a file path (not a full URL)
+                          const isFilePath = !resumePath.startsWith('http');
+                          
+                          if (isFilePath) {
+                            const { data, error } = await supabase.storage
+                              .from('resumes')
+                              .createSignedUrl(resumePath, 3600);
+                            
+                            if (data?.signedUrl) {
+                              window.open(data.signedUrl, '_blank');
+                            } else {
+                              toast.error('Failed to load resume');
+                            }
+                          } else {
+                            window.open(resumePath, '_blank');
+                          }
+                        }}
                         className="inline-flex items-center gap-2 text-primary hover:underline"
                       >
                         <FileText className="w-4 h-4" />
                         View Resume
                         <ExternalLink className="w-4 h-4" />
-                      </a>
+                      </button>
                     </div>
                   )}
 
