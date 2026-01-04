@@ -241,7 +241,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      company_can_view_student: {
+        Args: { _company_user_id: string; _student_profile_id: string }
+        Returns: boolean
+      }
     }
     Enums: {
       application_status: "applied" | "reviewed" | "accepted" | "rejected"

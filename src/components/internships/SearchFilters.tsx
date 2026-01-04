@@ -109,14 +109,14 @@ export function SearchFilters({ onSearch }: SearchFiltersProps) {
             <div>
               <Label className="text-sm text-muted-foreground mb-2 block">Industry</Label>
               <Select
-                value={filters.industry}
-                onValueChange={(value) => setFilters({ ...filters, industry: value })}
+                value={filters.industry || "all"}
+                onValueChange={(value) => setFilters({ ...filters, industry: value === "all" ? "" : value })}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="All Industries" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Industries</SelectItem>
+                  <SelectItem value="all">All Industries</SelectItem>
                   {industries.map((industry) => (
                     <SelectItem key={industry} value={industry}>
                       {industry}

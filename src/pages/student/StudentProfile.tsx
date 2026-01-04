@@ -139,11 +139,8 @@ export default function StudentProfile() {
       return;
     }
 
-    const { data: { publicUrl } } = supabase.storage
-      .from('resumes')
-      .getPublicUrl(fileName);
-
-    setFormData({ ...formData, resume_url: publicUrl });
+    // Store the file path instead of public URL since bucket is private
+    setFormData({ ...formData, resume_url: fileName });
     toast.success('Resume uploaded successfully!');
     setUploading(false);
   };
@@ -360,14 +357,23 @@ export default function StudentProfile() {
                   <FileText className="w-8 h-8 text-primary" />
                   <div className="flex-1">
                     <p className="font-medium text-foreground">Resume uploaded</p>
-                    <a
-                      href={formData.resume_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
+                    <button
+                      onClick={async () => {
+                        // Get a signed URL for private bucket
+                        const { data, error } = await supabase.storage
+                          .from('resumes')
+                          .createSignedUrl(formData.resume_url, 3600); // 1 hour expiry
+                        
+                        if (data?.signedUrl) {
+                          window.open(data.signedUrl, '_blank');
+                        } else {
+                          toast.error('Failed to load resume');
+                        }
+                      }}
                       className="text-sm text-primary hover:underline"
                     >
                       View resume
-                    </a>
+                    </button>
                   </div>
                   <Button
                     variant="outline"
