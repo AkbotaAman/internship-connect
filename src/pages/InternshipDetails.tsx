@@ -44,6 +44,7 @@ export default function InternshipDetails() {
   const [coverLetter, setCoverLetter] = useState('');
   const [dialogOpen, setDialogOpen] = useState(false);
   const [studentProfile, setStudentProfile] = useState<any>(null);
+  const [isOwnInternship, setIsOwnInternship] = useState(false);
 
   useEffect(() => {
     if (id) {
@@ -54,6 +55,18 @@ export default function InternshipDetails() {
       }
     }
   }, [id, user, profile]);
+
+  const checkIfOwnInternship = async (internshipCompanyId: string) => {
+    const { data: companyData } = await supabase
+      .from('company_profiles')
+      .select('id')
+      .eq('user_id', user?.id)
+      .single();
+
+    if (companyData) {
+      setIsOwnInternship(internshipCompanyId === companyData.id);
+    }
+  };
 
   const fetchInternship = async () => {
     const { data, error } = await supabase
@@ -81,6 +94,11 @@ export default function InternshipDetails() {
 
     setInternship(data);
     setLoading(false);
+    
+    // Check if company owns this internship
+    if (user && profile?.role === 'company') {
+      checkIfOwnInternship(data.company_id);
+    }
   };
 
   const checkExistingApplication = async () => {
@@ -241,11 +259,22 @@ export default function InternshipDetails() {
               </div>
             </div>
 
-            {/* Apply Card */}
+            {/* Apply Card - Only show for students */}
             <div className="lg:w-80">
               <Card className="sticky top-24">
                 <CardContent className="p-6">
-                  {hasApplied ? (
+                  {profile?.role === 'company' && isOwnInternship ? (
+                    <div className="text-center py-4">
+                      <Building2 className="w-12 h-12 text-muted-foreground mx-auto mb-3" />
+                      <h3 className="font-semibold text-foreground mb-1">Your Internship</h3>
+                      <p className="text-sm text-muted-foreground">
+                        View applications in your dashboard
+                      </p>
+                      <Button asChild variant="outline" className="mt-4 w-full">
+                        <Link to="/company/applicants">View Applicants</Link>
+                      </Button>
+                    </div>
+                  ) : hasApplied ? (
                     <div className="text-center py-4">
                       <CheckCircle2 className="w-12 h-12 text-success mx-auto mb-3" />
                       <h3 className="font-semibold text-foreground mb-1">Application Submitted</h3>

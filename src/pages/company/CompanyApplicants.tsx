@@ -25,6 +25,10 @@ import {
   Eye,
   Loader2,
   ExternalLink,
+  Github,
+  Linkedin,
+  Globe,
+  Twitter,
 } from 'lucide-react';
 import {
   Dialog,
@@ -70,27 +74,32 @@ export default function CompanyApplicants() {
       if (internships && internships.length > 0) {
         const internshipIds = internships.map(i => i.id);
 
-        const { data } = await supabase
-          .from('applications')
-          .select(`
-            *,
-            student_profiles (
-              id,
-              full_name,
-              education_level,
-              skills,
-              location,
-              bio,
-              resume_url,
-              avatar_url
-            ),
-            internships (
-              id,
-              title
-            )
-          `)
-          .in('internship_id', internshipIds)
-          .order('created_at', { ascending: false });
+          const { data } = await supabase
+            .from('applications')
+            .select(`
+              *,
+              student_profiles (
+                id,
+                full_name,
+                education_level,
+                skills,
+                location,
+                bio,
+                resume_url,
+                avatar_url,
+                github_url,
+                linkedin_url,
+                twitter_url,
+                portfolio_url,
+                projects
+              ),
+              internships (
+                id,
+                title
+              )
+            `)
+            .in('internship_id', internshipIds)
+            .order('created_at', { ascending: false });
 
         setApplications(data || []);
       }
@@ -309,13 +318,106 @@ export default function CompanyApplicants() {
                     </div>
                   )}
 
+                  {/* Social Links */}
+                  {(selectedApplication.student_profiles?.github_url ||
+                    selectedApplication.student_profiles?.linkedin_url ||
+                    selectedApplication.student_profiles?.twitter_url ||
+                    selectedApplication.student_profiles?.portfolio_url) && (
+                    <div>
+                      <h4 className="font-semibold text-foreground mb-2">Social Links</h4>
+                      <div className="flex flex-wrap gap-3">
+                        {selectedApplication.student_profiles?.github_url && (
+                          <a
+                            href={selectedApplication.student_profiles.github_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1.5 text-sm text-primary hover:underline"
+                          >
+                            <Github className="w-4 h-4" />
+                            GitHub
+                          </a>
+                        )}
+                        {selectedApplication.student_profiles?.linkedin_url && (
+                          <a
+                            href={selectedApplication.student_profiles.linkedin_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1.5 text-sm text-primary hover:underline"
+                          >
+                            <Linkedin className="w-4 h-4" />
+                            LinkedIn
+                          </a>
+                        )}
+                        {selectedApplication.student_profiles?.twitter_url && (
+                          <a
+                            href={selectedApplication.student_profiles.twitter_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1.5 text-sm text-primary hover:underline"
+                          >
+                            <Twitter className="w-4 h-4" />
+                            Twitter
+                          </a>
+                        )}
+                        {selectedApplication.student_profiles?.portfolio_url && (
+                          <a
+                            href={selectedApplication.student_profiles.portfolio_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1.5 text-sm text-primary hover:underline"
+                          >
+                            <Globe className="w-4 h-4" />
+                            Portfolio
+                          </a>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Projects */}
+                  {selectedApplication.student_profiles?.projects?.length > 0 && (
+                    <div>
+                      <h4 className="font-semibold text-foreground mb-2">Projects</h4>
+                      <div className="space-y-3">
+                        {selectedApplication.student_profiles.projects.map((project: any, index: number) => (
+                          <div key={index} className="p-3 bg-secondary/30 rounded-lg">
+                            <div className="flex items-center gap-2">
+                              <span className="font-medium text-foreground">{project.title}</span>
+                              {project.url && (
+                                <a
+                                  href={project.url}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="text-primary hover:text-primary/80"
+                                >
+                                  <ExternalLink className="w-4 h-4" />
+                                </a>
+                              )}
+                            </div>
+                            {project.description && (
+                              <p className="text-sm text-muted-foreground mt-1">{project.description}</p>
+                            )}
+                            {project.technologies?.length > 0 && (
+                              <div className="flex flex-wrap gap-1 mt-2">
+                                {project.technologies.map((tech: string) => (
+                                  <Badge key={tech} variant="outline" className="text-xs">
+                                    {tech}
+                                  </Badge>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
                   {selectedApplication.student_profiles?.resume_url && (
                     <div>
                       <h4 className="font-semibold text-foreground mb-2">Resume</h4>
                       <button
                         onClick={async () => {
                           const resumePath = selectedApplication.student_profiles.resume_url;
-                          // Check if it's a file path (not a full URL)
                           const isFilePath = !resumePath.startsWith('http');
                           
                           if (isFilePath) {
