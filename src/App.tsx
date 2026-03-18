@@ -11,6 +11,7 @@ import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import Internships from "./pages/Internships";
 import InternshipDetails from "./pages/InternshipDetails";
+import Waitlist from "./pages/Waitlist";
 import NotFound from "./pages/NotFound";
 
 // Student Pages
