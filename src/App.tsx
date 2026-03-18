@@ -45,6 +45,7 @@ const App = () => (
               <Route path="/auth" element={<Auth />} />
               <Route path="/internships" element={<Internships />} />
               <Route path="/internships/:id" element={<InternshipDetails />} />
+              <Route path="/waitlist" element={<Waitlist />} />
 
               {/* Student Routes */}
               <Route path="/student/dashboard" element={<StudentDashboard />} />
