@@ -68,7 +68,7 @@ export default function Waitlist() {
         ) : (
           <>
             {/* Copy */}
-            <div className="space-y-4">
+            <div className="space-y-4 animate-fade-in" style={{ animationDelay: '100ms', animationFillMode: 'both' }}>
               <h1 className="text-3xl sm:text-[2.5rem] font-bold text-foreground tracking-tight leading-[1.15]">
                 Land your dream<br />internship
               </h1>
