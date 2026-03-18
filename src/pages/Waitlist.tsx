@@ -78,7 +78,7 @@ export default function Waitlist() {
             </div>
 
             {/* Single input + button */}
-            <form onSubmit={handleSubmit} className="space-y-3">
+            <form onSubmit={handleSubmit} className="space-y-3 animate-fade-in" style={{ animationDelay: '250ms', animationFillMode: 'both' }}>
               <input
                 type="email"
                 required
