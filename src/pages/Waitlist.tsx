@@ -104,7 +104,7 @@ export default function Waitlist() {
             </form>
 
             {/* Social proof */}
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-muted-foreground animate-fade-in" style={{ animationDelay: '400ms', animationFillMode: 'both' }}>
               <span className="text-foreground font-semibold">{displayCount.toLocaleString()}+</span> people already signed up
             </p>
           </>
