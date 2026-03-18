@@ -11,6 +11,7 @@ import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import Internships from "./pages/Internships";
 import InternshipDetails from "./pages/InternshipDetails";
+import Waitlist from "./pages/Waitlist";
 import NotFound from "./pages/NotFound";
 
 // Student Pages
@@ -44,6 +45,7 @@ const App = () => (
               <Route path="/auth" element={<Auth />} />
               <Route path="/internships" element={<Internships />} />
               <Route path="/internships/:id" element={<InternshipDetails />} />
+              <Route path="/waitlist" element={<Waitlist />} />
 
               {/* Student Routes */}
               <Route path="/student/dashboard" element={<StudentDashboard />} />
