@@ -48,7 +48,7 @@ export default function Waitlist() {
 
       <div className="relative z-10 max-w-sm w-full text-center space-y-10">
         {/* Logo */}
-        <div className="flex items-center justify-center gap-2">
+        <div className="flex items-center justify-center gap-2 animate-fade-in" style={{ animationDelay: '0ms', animationFillMode: 'both' }}>
           <div className="w-9 h-9 rounded-lg bg-primary flex items-center justify-center">
             <Briefcase className="w-[18px] h-[18px] text-primary-foreground" />
           </div>
@@ -68,7 +68,7 @@ export default function Waitlist() {
         ) : (
           <>
             {/* Copy */}
-            <div className="space-y-4">
+            <div className="space-y-4 animate-fade-in" style={{ animationDelay: '100ms', animationFillMode: 'both' }}>
               <h1 className="text-3xl sm:text-[2.5rem] font-bold text-foreground tracking-tight leading-[1.15]">
                 Land your dream<br />internship
               </h1>
@@ -78,7 +78,7 @@ export default function Waitlist() {
             </div>
 
             {/* Single input + button */}
-            <form onSubmit={handleSubmit} className="space-y-3">
+            <form onSubmit={handleSubmit} className="space-y-3 animate-fade-in" style={{ animationDelay: '250ms', animationFillMode: 'both' }}>
               <input
                 type="email"
                 required
@@ -104,7 +104,7 @@ export default function Waitlist() {
             </form>
 
             {/* Social proof */}
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-muted-foreground animate-fade-in" style={{ animationDelay: '400ms', animationFillMode: 'both' }}>
               <span className="text-foreground font-semibold">{displayCount.toLocaleString()}+</span> people already signed up
             </p>
           </>
